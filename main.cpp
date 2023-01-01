@@ -89,6 +89,9 @@ void print_matrix(int arr[3][3]) {
 
 int main() {
 
+    pair<int,int> occupied_places_history[9];
+    int index = 0;
+
     int matrix[3][3];
     for(int i=0; i<3; i++) {
         for(int j=0; j<3; j++) {
@@ -109,6 +112,8 @@ int main() {
         cin>>row>>col;
 
         matrix[row][col] = 1;
+        occupied_places_history[index] = {row, col};
+        index++;
 
         if(horizontal_pattern_check(matrix, 1)) {
             print_message_user();
@@ -126,8 +131,16 @@ int main() {
             print_matrix(matrix);
         }
         else {
-            int computer_input_row = random_number();
-            int computer_input_col = random_number();
+            random_again: 
+                int computer_input_row = random_number();
+                int computer_input_col = random_number();
+                for(int i=0; i<9; i++) {
+                    if(occupied_places_history[i].first == computer_input_row and occupied_places_history[i].second == computer_input_col) {
+                        goto random_again;
+                    }
+                }
+            occupied_places_history[index] = {computer_input_row, computer_input_col};
+            index++;
 
             matrix[computer_input_row][computer_input_col] = 0;
             // cout<<computer_input_row<<" "<<computer_input_col<<endl;

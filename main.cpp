@@ -8,6 +8,10 @@ int random_number() {
     int computer_input = rand() % 3;
     return computer_input;
 }
+int random_number_toss() {
+    srand(time(0));
+    return rand() %2 + 1;
+}
 
 bool horizontal_pattern_check(int arr[3][3], int pattern_type) {
 
@@ -81,16 +85,13 @@ void print_message_computer() {
 void print_matrix(int arr[3][3]) {
     for(int i=0; i<3; i++) {
         for(int j=0; j<3; j++) {
-            cout<<arr[i][j]<<" ";
+            cout<<arr[i][j]<<"   ";
         }
         cout<<endl;
     }
 }
 
 int main() {
-
-    pair<int,int> occupied_places_history[9];
-    int index = 0;
 
     int matrix[3][3];
     for(int i=0; i<3; i++) {
@@ -102,6 +103,38 @@ int main() {
     cout<<"Enter your name: ";
     getline(cin, name);
 
+
+    int user_choice;
+    int computer_choice;
+    int result_toss;
+    cout<<"Choose any one to decide the turn"<<endl;
+    cout<<"1.Head"<<endl;
+    cout<<"2.Tail"<<endl;
+
+    cout<<"Your choice: ";
+    cin>>user_choice;
+    if(user_choice == 1) {
+        computer_choice = 2;
+    }
+    else computer_choice = 1;
+    
+    cout<<"You choosen: "<<user_choice<<endl;
+    cout<<"Computer choosen: "<<computer_choice<<endl;
+
+    // srand(time(0));
+    // result_toss = rand()%2+1;
+    result_toss = random_number_toss();
+    cout<<endl;
+    if(result_toss == user_choice) {
+        cout<<name<<" won the toss!"<<endl;
+        goto user_input;
+    }
+    else {
+        cout<<"Computer won the toss!"<<endl;
+        goto think_again;
+    }
+    
+
     user_input: 
 
         cout<<"Play board"<<endl;
@@ -111,9 +144,8 @@ int main() {
         cout<<"Enter your move (row, col): ";
         cin>>row>>col;
 
+        
         matrix[row][col] = 1;
-        occupied_places_history[index] = {row, col};
-        index++;
 
         if(horizontal_pattern_check(matrix, 1)) {
             print_message_user();
@@ -131,19 +163,20 @@ int main() {
             print_matrix(matrix);
         }
         else {
-            random_again: 
+            
+            think_again:
                 int computer_input_row = random_number();
                 int computer_input_col = random_number();
-                for(int i=0; i<9; i++) {
-                    if(occupied_places_history[i].first == computer_input_row and occupied_places_history[i].second == computer_input_col) {
-                        goto random_again;
-                    }
-                }
-            occupied_places_history[index] = {computer_input_row, computer_input_col};
-            index++;
 
-            matrix[computer_input_row][computer_input_col] = 0;
-            // cout<<computer_input_row<<" "<<computer_input_col<<endl;
+            if(matrix[computer_input_row][computer_input_col] == 0) {
+                goto think_again;
+            }
+            else if(matrix[computer_input_row][computer_input_col] == 1) {
+                goto think_again;
+            }
+            else {
+                matrix[computer_input_row][computer_input_col] = 0;
+            }
 
             if(horizontal_pattern_check(matrix, 0)) {
                 print_message_computer();
